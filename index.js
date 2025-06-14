@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const faceapi = require('@vladmandic/face-api');
+const faceapi = require('face-api.js');
 const canvas = require('canvas');
 const path = require('path');
 const multer = require('multer');
@@ -27,7 +27,7 @@ faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
 // Load models
 const MODEL_PATH = path.join(__dirname, 'models');
 async function loadModels() {
-    await faceapi.nets.ssdMobilenetv1.loadFromDisk(MODEL_PATH);
+    await faceapi.nets.tinyFaceDetector.loadFromDisk(MODEL_PATH);
     await faceapi.nets.faceLandmark68Net.loadFromDisk(MODEL_PATH);
     await faceapi.nets.faceRecognitionNet.loadFromDisk(MODEL_PATH);
 }
@@ -79,8 +79,9 @@ app.post('/compare', async (req, res) => {
         const img1 = await base64ToImage(face1);
         const img2 = await base64ToImage(face2);
 
-        const desc1 = await faceapi.detectSingleFace(img1).withFaceLandmarks().withFaceDescriptor();
-        const desc2 = await faceapi.detectSingleFace(img2).withFaceLandmarks().withFaceDescriptor();
+        const options = new faceapi.TinyFaceDetectorOptions({inputSize: 160});
+        const desc1 = await faceapi.detectSingleFace(img1,options).withFaceLandmarks().withFaceDescriptor();
+        const desc2 = await faceapi.detectSingleFace(img2,options).withFaceLandmarks().withFaceDescriptor();
 
         if (!desc1 || !desc2) {
             return res.status(400).json({
