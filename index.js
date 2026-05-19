@@ -79,9 +79,9 @@ app.post('/compare', async (req, res) => {
         const img1 = await base64ToImage(face1);
         const img2 = await base64ToImage(face2);
 
-        const options = new faceapi.TinyFaceDetectorOptions({inputSize: 160});
-        const desc1 = await faceapi.detectSingleFace(img1,options).withFaceLandmarks().withFaceDescriptor();
-        const desc2 = await faceapi.detectSingleFace(img2,options).withFaceLandmarks().withFaceDescriptor();
+        const options = new faceapi.TinyFaceDetectorOptions({ inputSize: 160 });
+        const desc1 = await faceapi.detectSingleFace(img1, options).withFaceLandmarks().withFaceDescriptor();
+        const desc2 = await faceapi.detectSingleFace(img2, options).withFaceLandmarks().withFaceDescriptor();
 
         if (!desc1 || !desc2) {
             return res.status(400).json({
@@ -115,6 +115,6 @@ app.post('/compare', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Face API (base64 version) running at http://localhost:${PORT}`);
 });
